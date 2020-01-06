@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - wordNet",
+            "request": "launch",
+            "mainClass": "wordNet.wordNet",
+            "projectName": "ads2_c111e0d4"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - wordNet",
+            "request": "launch",
+            "mainClass": "wordNet",
+            "projectName": "ads2_c111e0d4"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - wordNet",
+            "request": "launch",
+            "mainClass": "assignment1.wordNet",
+            "projectName": "ads2_c111e0d4"
+        }
+    ]
+}
