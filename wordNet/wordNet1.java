@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class wordNet {
+public class wordNet1 {
 
     static ArrayList<String> id = new ArrayList<String>();
     static ArrayList<String> word = new ArrayList<String>();
     // static ArrayList<String> wordm = new ArrayList<String>();
 
     static ArrayList<String> idhy = new ArrayList<String>();
-    // static ArrayList<String[]> links = new ArrayList<String[]>();
+    static ArrayList<String[]> idsynset = new ArrayList<String[]>();
+    static ArrayList<String> nouns = new ArrayList<String>();
     LinearProbingHashST<String,String[]> lp = new LinearProbingHashST<String,String[]>(821921);
+    LinearProbingHashST<String,String[]> lps = new LinearProbingHashST<String,String[]>(821921);
+
 
     // constructor takes the name of the two input files
     // public wordNet(String synsets, String hypernyms)
@@ -24,7 +27,7 @@ public class wordNet {
 
     // }
 
-    public wordNet() {
+    public wordNet1() {
 
     }
     // returns all WordNet nouns
@@ -92,18 +95,27 @@ public class wordNet {
     public void synSets()  {
         String[] intArray = new String[3];
         try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets.txt";
-            System.out.println(fileName);
+            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets3.txt";
+            // System.out.println(fileName);
             File file = new File(fileName);
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
-                intArray = line.split(",");
-                lp.put(line.split(",")[0], line.split(",")[1].split(" "));
+                System.out.println("heyyyy");
 
-                id.add(intArray[0]);
+                // intArray = line.split(",");
+                // lp.put(line.split(",")[0], line.split(",")[1].split(" "));
+                // id.add(intArray[0]);
                 // wordm.add(intArray[2]);
+                String[]tem = line.split(",")[1].split(" ");
+                // System.out.println(Arrays.toString(tem));
+
+
+
+
+
+
             }
         }
 
@@ -112,6 +124,7 @@ public class wordNet {
         } catch (IOException e) {
             e.getMessage();
         }
+
     }
 
     public String toString() {
@@ -179,7 +192,7 @@ public class wordNet {
 
         // }
         // System.out.println(wn.toString());
-        System.out.println(wn.toString1());
+        // System.out.println(wn.toString1());
    }
 }
 
