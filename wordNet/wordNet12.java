@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class wordNet {
+public class wordNet12 {
 
-    static ArrayList<String> id = new ArrayList<String>();
     static ArrayList<String> word = new ArrayList<String>();
+    // static ArrayList<String> id = new ArrayList<String>();
+
     // static ArrayList<String> wordm = new ArrayList<String>();
 
     static ArrayList<String> idhy = new ArrayList<String>();
-    static ArrayList<String[]> links = new ArrayList<String[]>();
+    // static ArrayList<String[]> links = new ArrayList<String[]>();
     LinearProbingHashST<String,String[]> lp = new LinearProbingHashST<String,String[]>(821921);
+    LinearProbingHashST<String,ArrayList<String>> lpsyn = new LinearProbingHashST<String,ArrayList<String>>(821921);
+
 
     // constructor takes the name of the two input files
     // public wordNet(String synsets, String hypernyms)
@@ -24,7 +27,7 @@ public class wordNet {
 
     // }
 
-    public wordNet() {
+    public wordNet12() {
 
     }
     // returns all WordNet nouns
@@ -70,7 +73,6 @@ public class wordNet {
                     // System.out.println("Helloyyyyyy2");
                 lp.put(line.split(",",2)[0], line.split(",",2)[1].split(","));
                 idhy.add(line.split(",",2)[0]);
-                links.add(line.split(",",2)[1].split(","));
                 }
 
                 else if(line.split(" ").length==1)
@@ -94,18 +96,22 @@ public class wordNet {
         String[] intArray = new String[3];
 
         try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets.txt";
+            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets3.txt";
             System.out.println(fileName);
             File file = new File(fileName);
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
-                intArray = line.split(",");
-                lp.put(line.split(",")[0], line.split(",")[1].split(" "));
-
-                id.add(intArray[0]);
-                // wordm.add(intArray[2]);
+                String[] arr = line.split(",");
+                String[] nouns = arr[1].split(" ");
+                for (int i = 0; i < nouns.length; i++) {
+                    if (lpsyn.get(nouns[i]) == null) {
+                        lpsyn.put(nouns[i], new ArrayList<>());
+                        word.add(nouns[i]);
+                    }
+                    lpsyn.get(nouns[i]).add(arr[0]);
+                }
             }
         }
 
@@ -116,74 +122,24 @@ public class wordNet {
         }
     }
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        System.out.println("Size is : " + idhy.size());
-        for(int i =0 ; i<lp.size();i++)
-        {
-            // lp.put(idhy.get(i),links.get(i));
-            String key = idhy.get(i);
-            sb.append(key + " :: [");
-            int j = 0;
-            if (lp.get(key) !=null ) {
-                String[] toks = lp.get(key);
-                for (; j < toks.length-1; j++) {
-                    sb.append(toks[j] + ", ");
-                }
-                sb.append(toks[j]);
-            } else {
-                sb.append(key);
-            }
-            sb.append("]\n");
-
-            // System.out.println(lp.toString());
-        }
-        return sb.toString();
+public String toString() {
+    for (int i = 0; i < word.size(); i++) {
+        System.out.println(word.get(i));
+        System.out.println(lpsyn.get(word.get(i)));
     }
-
-    public String toString1() {
-        StringBuffer sb = new StringBuffer();
-        System.out.println("Size is : " + id.size());
-        for(int i =0 ; i<lp.size();i++)
-        {
-            // lp.put(idhy.get(i),links.get(i));
-            String key = id.get(i);
-            sb.append(key + " :: [");
-            int j = 0;
-            if (lp.get(key) !=null ) {
-                String[] toks = lp.get(key);
-                for (; j < toks.length-1; j++) {
-                    sb.append(toks[j] + ", ");
-                }
-                sb.append(toks[j]);
-            } else {
-                sb.append(key);
-            }
-            sb.append("]\n");
-
-            // System.out.println(lp.toString());
-        }
-        return sb.toString();
-    }
+    return "";
+}
 
 
     // // do unit testing of this class
     public static void main(String[] args) {
-        wordNet wn = new wordNet();
-        // wn.synSets();
-        wn.hyperNyms();
-        // System.out.println(id);
-        // System.out.println(word);
-        // System.out.println(wordm);
-        System.out.println(idhy);
-        System.out.println(links);
+        wordNet12 wordNet12Obj = new wordNet12();
+        wordNet12Obj.synSets();
+        for (int i = 0; i < wordNet12Obj.word.size(); i++) {
+            System.out.println(wordNet12Obj.word.get(i));
+            System.out.println(wordNet12Obj.lpsyn.get(wordNet12Obj.word.get(i)));
+        }
 
-        // for (int i = 0; i < links.size(); i++) {
-        //     System.out.println(Arrays.toString(links.get(i)));
-
-        // }
-        System.out.println(wn.toString());
-        // System.out.println(wn.toString1());
    }
 }
 
