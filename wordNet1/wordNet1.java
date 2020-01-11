@@ -17,8 +17,8 @@ public class wordNet1 {
 
     static ArrayList<String> idhy = new ArrayList<String>();
     // static ArrayList<String[]> links = new ArrayList<String[]>();
-    LinearProbingHashST<String,String[]> lp = new LinearProbingHashST<String,String[]>(821921);
-    LinearProbingHashST<String,ArrayList<String>> lpsyn = new LinearProbingHashST<String,ArrayList<String>>(821921);
+    LinearProbingHashST<String,Integer[]> lp = new LinearProbingHashST<String,Integer[]>(821921);
+    LinearProbingHashST<String,ArrayList<Integer>> lpsyn = new LinearProbingHashST<String,ArrayList<Integer>>(821921);
 
 
     // constructor takes the name of the two input files
@@ -56,43 +56,43 @@ public class wordNet1 {
 
     // }
 
-    public void hyperNyms()  {
-        try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\hypernyms3InvalidCycle.txt";
-            File file = new File(fileName);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-            String[] temp;
-            while ((line = br.readLine()) != null) {
-                temp = line.split(",",2);
-                String s = "";
-                if(temp.length>1)
-                {
-                lp.put(line.split(",",2)[0], line.split(",",2)[1].split(","));
-                idhy.add(line.split(",",2)[0]);
-                }
+    // public void hyperNyms()  {
+    //     try {
+    //         String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\hypernyms3InvalidCycle.txt";
+    //         File file = new File(fileName);
+    //         FileReader fr = new FileReader(file);
+    //         BufferedReader br = new BufferedReader(fr);
+    //         String line;
+    //         String[] temp;
+    //         while ((line = br.readLine()) != null) {
+    //             temp = line.split(",",2);
+    //             String s = "";
+    //             if(temp.length>1)
+    //             {
+    //             lp.put(line.split(",",2)[0], line.split(",",2)[1].split(","));
+    //             idhy.add(line.split(",",2)[0]);
+    //             }
 
-                else if(line.split(" ").length==1)
-                {
-                    lp.put(line, s.split(""));
-                    idhy.add(line);
-                }
-            }
-        }
+    //             else if(line.split(" ").length==1)
+    //             {
+    //                 lp.put(line, s.split(""));
+    //                 idhy.add(line);
+    //             }
+    //         }
+    //     }
 
-        catch (FileNotFoundException e) {
-            e.getMessage();
-        } catch (IOException e) {
-            e.getMessage();
-        }
-    }
+    //     catch (FileNotFoundException e) {
+    //         e.getMessage();
+    //     } catch (IOException e) {
+    //         e.getMessage();
+    //     }
+    // }
 
     public void synSets()  {
         String[] intArray = new String[3];
 
         try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets.txt";
+            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets3.txt";
             System.out.println(fileName);
             File file = new File(fileName);
             FileReader fr = new FileReader(file);
@@ -101,20 +101,22 @@ public class wordNet1 {
             while ((line = br.readLine()) != null) {
                 String[] temp = line.split(",")[1].split(" ");
                 ArrayList<String> forval = new ArrayList<String>();
-                ArrayList<String> t = new ArrayList<String>();
+                ArrayList<Integer> t = new ArrayList<Integer>();
                 for(int i =0;i<temp.length;i++)
                 {
                       if(lpsyn.get(temp[i]) == null)
                       {
-                            t = new ArrayList<String>();
-                            t.add(line.split(",")[0]);
+                            t = new ArrayList<Integer>();
+                            int a=Integer.parseInt(line.split(",")[0]);
+                            t.add(a);;
                             lpsyn.put(temp[i],t);
                             //to keep a note of all the keys for the tostring method
                             word.add(temp[i]);
                       }
                       else
                       {
-                         lpsyn.get(temp[i]).add(line.split(",")[0]);
+                         int b =Integer.parseInt(line.split(",")[0]);
+                         lpsyn.get(temp[i]).add(b);
                       }
                 }
             }
@@ -127,30 +129,30 @@ public class wordNet1 {
         }
     }
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        System.out.println("Size is : " + idhy.size());
-        for(int i =0 ; i<lp.size();i++)
-        {
-            // lp.put(idhy.get(i),links.get(i));
-            String key = idhy.get(i);
-            sb.append(key + " :: [");
-            int j = 0;
-            if (lp.get(key) !=null ) {
-                String[] toks = lp.get(key);
-                for (; j < toks.length-1; j++) {
-                    sb.append(toks[j] + ", ");
-                }
-                sb.append(toks[j]);
-            } else {
-                sb.append(key);
-            }
-            sb.append("]\n");
+    // public String toString() {
+    //     StringBuffer sb = new StringBuffer();
+    //     System.out.println("Size is : " + idhy.size());
+    //     for(int i =0 ; i<lp.size();i++)
+    //     {
+    //         // lp.put(idhy.get(i),links.get(i));
+    //         String key = idhy.get(i);
+    //         sb.append(key + " :: [");
+    //         int j = 0;
+    //         if (lp.get(key) !=null ) {
+    //             String[] toks = lp.get(key);
+    //             for (; j < toks.length-1; j++) {
+    //                 sb.append(toks[j] + ", ");
+    //             }
+    //             sb.append(toks[j]);
+    //         } else {
+    //             sb.append(key);
+    //         }
+    //         sb.append("]\n");
 
-            // System.out.println(lp.toString());
-        }
-        return sb.toString();
-    }
+    //         // System.out.println(lp.toString());
+    //     }
+    //     return sb.toString();
+    // }
 
 
     // // // do unit testing of this class

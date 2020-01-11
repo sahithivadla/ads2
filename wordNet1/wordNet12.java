@@ -136,8 +136,8 @@ public String toString() {
         wordNet12 wordNet12Obj = new wordNet12();
         wordNet12Obj.synSets();
         for (int i = 0; i < wordNet12Obj.word.size(); i++) {
-            System.out.println(wordNet12Obj.word.get(i));
-            System.out.println(wordNet12Obj.lpsyn.get(wordNet12Obj.word.get(i)));
+            System.out.println(wordNet12Obj.word.get(i)+"--->"+wordNet12Obj.lpsyn.get(wordNet12Obj.word.get(i)));
+            // System.out.println(wordNet12Obj.lpsyn.get(wordNet12Obj.word.get(i)));
         }
 
    }
