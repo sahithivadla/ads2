@@ -92,7 +92,7 @@ public class wordNet1 {
         String[] intArray = new String[3];
 
         try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets3.txt";
+            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets15.txt";
             System.out.println(fileName);
             File file = new File(fileName);
             FileReader fr = new FileReader(file);

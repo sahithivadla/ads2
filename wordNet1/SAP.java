@@ -9,133 +9,148 @@ import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 
 
-public class SAP
-{
+public class SAP {
+    private Digraph G;
+    private final int infinity= Integer.MAX_VALUE;
 
-    // private static final Exception IllegalArgumentException = null;
-    Digraph gra;
-    int d=Integer.MAX_VALUE;
-
-
-    // constructor takes a digraph (not necessarily a DAG)
-    public SAP(Digraph G)
-    {
-        this.gra = new Digraph(G);
-
-    }
-
-    // length of szetween v and w; -1 if no such path
-    public int length(int v, int w)
-    {
-        if(v<0 || w<=0) throw  new IllegalArgumentException();
-        BreadthFirstDirectedPaths bfs = new BreadthFirstDirectedPaths(gra,v);
-        BreadthFirstDirectedPaths bfs1 = new BreadthFirstDirectedPaths(gra,w);
-        int dist=d;
-
-
-        for(int i=0;i<gra.V();i++)
-        {
-            if (bfs.hasPathTo(i) && bfs1.hasPathTo(i)) {
-                if ((bfs.distTo(i) + bfs1.distTo(i)) < dist) {
-               dist= bfs.distTo(i)+bfs1.distTo(i);
-            }
-        }
-        }
-        if (dist == d) {
-            return -1;
-        } else {
-            return dist;
-        }
-    }
-
-
-    // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
-    public int ancestor(int v, int w)
-    {
-        if(v<0 || w<=0) throw  new IllegalArgumentException();
-        BreadthFirstDirectedPaths bfv = new BreadthFirstDirectedPaths(gra,v);
-        BreadthFirstDirectedPaths bfw = new BreadthFirstDirectedPaths(gra,w);
-        int minLength = d;
-        int anc = -1;
-        for (int i = 0; i < gra.V(); i++) {
-            if (bfv.hasPathTo(i) && bfw.hasPathTo(i)) {
-                if ((bfv.distTo(i) + bfw.distTo(i)) < d) {
-                    minLength= bfv.distTo(i)+bfw.distTo(i);
-                    anc=i;
-            }
-        }
-    }
-    return anc;
-}
-
-    // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-    public int length(Iterable<Integer> v, Iterable<Integer> w)
-    {
-
-        int dist =0;
-        int m =d;
-        for(int iiv:v)
-        {
-            for(int iiw:w)
-            {
-                dist=length(iiv,iiw);
-                if (dist == -1 && dist < m) {
-                    m = dist;
-                }
-            }
-        }
-        if (m==d) {
-            return -1;
-        } else {
-            return m;
-        }
-    }
-
-    // a common ancestor that participates in shortest ancestral path; -1 if no such path
-    public int ancestor(Iterable<Integer> v, Iterable<Integer> w)
-    {
-        int dist =0;
-        int m =d;
-        int ancestors =-1;
-        for(int iiv:v)
-        {
-            for(int iiw:w)
-            {
-                dist=length(iiv,iiw);
-                if (dist == -1 && dist < m) {
-                    m = dist;
-                    ancestors =ancestor(iiv,iiw);
-                }
-            }
-        }
-        return ancestors;
-        }
-    // do unit testing of this class
-    public static void main(String[] args) throws FileNotFoundException,IOException
-    {
-
-        File file = new File("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\hypernyms.txt");
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
-        String line;
-        ArrayList<String> arr = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            arr.add(line);
-    }
-    Digraph graph = new Digraph(arr.size());
-    for (int i = 0; i < arr.size(); i++) {
-        String str[] = arr.get(i).split(",");
-         int v = Integer.parseInt(str[0]);
-      for (int j = 1; j < str.length; j++) {
-        int w = Integer.parseInt(str[j]);
-       graph.addEdge(v,w);
+    /**
+     * constructor takes graph as input
+     * @param G is the graph
+     */
+      public SAP(Digraph G) {
+      this.G = new Digraph(G);
       }
+
+      /**
+       * This method is used to find the length between two vertices
+       * @param v is one of the vertex
+       * @param w is one of the vertex
+       * @return distance if exists, else returns -1
+       */
+      public int length(int v, int w) {
+      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(G, v);
+      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(G, w);
+      int MinDist = infinity;
+      for (int i = 0; i < G.V(); i++) {
+      if (bv.hasPathTo(i) && bw.hasPathTo(i)) {
+      if ((bv.distTo(i) + bw.distTo(i)) < infinity) {
+      MinDist = bv.distTo(i) + bw.distTo(i);
+      }
+      }
+      }
+      if (MinDist == infinity) {
+      return -1;
+      }
+      else {
+      return MinDist;
+      }
+      }
+
+      /**
+       * This method is used to find the nearest ancestor
+       * @param v is one of the vertex
+       * @param w is one of the vertex
+       * @return ancestor if exists, else returns -1
+       */
+      public int ancestor(int v, int w) {
+      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(G, v);
+      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(G, w);
+      int MinDist = infinity;
+      int anc = -1;
+      for (int i = 0; i < G.V(); i++) {
+      if (bv.hasPathTo(i) && bw.hasPathTo(i)) {
+      if (bv.distTo(i) + bw.distTo(i) < infinity) {
+      MinDist = bv.distTo(i) + bw.distTo(i);
+      anc = i;
+      }
+      }
+      }
+      return anc;
+      }
+
+       /**
+        * This method is used to find the length
+        * @param v is the one vertex
+        * @param w is the second vertex
+        * @return distance if exists, else returns -1
+        */
+      public int length(Iterable<Integer> v, Iterable<Integer> w) {
+      int MinDist = infinity;
+      for (int i : v) {
+      for (int j : w) {
+      int dist = length(i,j);
+      if (dist == -1 && dist < MinDist) {
+      MinDist = dist;
+      }
+      }
+      }
+      if (MinDist == infinity) {
+      return -1;
+      } else {
+      return MinDist;
+      }
+      }
+
+      /**
+       * This method is used to find nearest ancestor
+       * @param v is the one vertex
+       * @param w is the second vertex
+       * @return ancestor if exists, else return -1
+       */
+      public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+      int MinDist = infinity;
+      int anc = -1;
+      for (int i : v) {
+      for (int j : w) {
+      int dist = length(i,j);
+      if(dist == -1 && dist < MinDist) {
+      MinDist = dist;
+      anc = ancestor(i,j);
+      }
+      }
+      }
+      return anc;
+      }
+
+      /**
+       *  do unit testing of this class
+       * @param args as string
+       *
+       */
+
+    //   public static void main (String[] args) throws FileNotFoundException,IOException{
+    //   ArrayList<String> arr = new ArrayList<>();
+    //     File file = new File("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet1\\hypernyms15Tree.txt");
+    // BufferedReader br = new BufferedReader(new FileReader(file));
+    //  String st;
+    //  while ((st = br.readLine()) != null) {
+    //  arr.add(st);
+    //  }
+    //  Digraph graph = new Digraph(arr.size());
+    // for (int i = 0; i < arr.size(); i++) {
+    // String str[] = arr.get(i).split(",");
+    // int v = Integer.parseInt(str[0]);
+    // for (int j = 1; j < str.length; j++) {
+    // int w = Integer.parseInt(str[j]);
+    // graph.addEdge(v,w);
+    // }
+    // }
+
+    // // for (int v = 0; v < arr.size(); v++) {
+    // // System.out.print(v+"---------->");
+    // // for (int w : graph.adj(v)) {
+    // // System.out.print(w+" ");
+    // // }
+    // // System.out.println();
+    // // }
+
+    // SAP sap = new SAP(graph);
+    // System.out.println(sap.length(1,6));
+    // System.out.println(sap.ancestor(1,6));
+
+
+    //   }
+
     }
-      SAP sp = new SAP(graph);
-      System.out.println(sp.ancestor(9,1000));
-      System.out.println(sp.length(900,1000));
 
- }
-
-}
 

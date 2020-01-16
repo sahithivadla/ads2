@@ -1,189 +1,156 @@
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import edu.princeton.cs.algs4.Digraph;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.Hashtable;
+import edu.princeton.cs.algs4.In;
 
-public class wordNet {
 
-    static ArrayList<String> id = new ArrayList<String>();
-    static ArrayList<String> word = new ArrayList<String>();
-    // static ArrayList<String> wordm = new ArrayList<String>();
+public class WordNet
+{
+     private final  Digraph graph;
+     private final SAP sapobj;
+  private final Hashtable<String,ArrayList<Integer>> lpsyn = new Hashtable<String,ArrayList<Integer>>();
+    private final ArrayList<String> val = new ArrayList<>();
+    private final ArrayList<String> words = new ArrayList<>();
 
-    static ArrayList<String> idhy = new ArrayList<String>();
-    static ArrayList<String[]> links = new ArrayList<String[]>();
-    LinearProbingHashST<String,String[]> lp = new LinearProbingHashST<String,String[]>(821921);
+     public WordNet(String synsets,String hypernyms)
+     {
 
-    // constructor takes the name of the two input files
-    // public wordNet(String synsets, String hypernyms)
-    // {
+        int c= this.synsetssplit(synsets);
+         graph=this.hypernymssplit(hypernyms,c);
+         sapobj=new SAP(graph);
+     }
 
-    // }
+     private int synsetssplit(String fname)
+     {
 
-    public wordNet() {
-
-    }
-    // returns all WordNet nouns
-    // public Iterable<String> nouns()
-    // {
-
-    // }
-
-    // // is the word a WordNet noun?
-    // public boolean isNoun(String word)
-    // {
-
-    // }
-
-    // // distance between nounA and nounB (defined below)
-    // public int distance(String nounA, String nounB)
-    // {
-
-    // }
-
-    // // a synset (second field of synsets.txt) that is the common ancestor of
-    // nounA and nounB
-    // // in a shortest ancestral path (defined below)
-    // public String sap(String nounA, String nounB)
-    // {
-
-    // }
-
-    public void hyperNyms()  {
-        try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\hypernyms3InvalidCycle.txt";
-            File file = new File(fileName);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
+        In input = new In(fname);
             String line;
-            String[] temp;
-            while ((line = br.readLine()) != null) {
-                temp = line.split(",",2);
-                String s = "";
-                // System.out.println("Hello - 1 :: " + line);
-                if(temp.length>1)
+            int count=0;
+
+            ArrayList<String> te = new ArrayList<String>();
+            while (input.hasNextLine()) {
+                // id as key  and then array list of nouns as value
+                line=input.readLine();
+                int k = Integer.parseInt(line.split(",")[0]);
+                val.add(k,line.split(",")[1]);
+                String[] temp = line.split(",")[1].split(" ");
+                ArrayList<Integer> t = new ArrayList<Integer>();
+                for(int i =0;i<temp.length;i++)
                 {
-                    // System.out.println("Helloyyyyyy2");
-                lp.put(line.split(",",2)[0], line.split(",",2)[1].split(","));
-                idhy.add(line.split(",",2)[0]);
-                links.add(line.split(",",2)[1].split(","));
+                      if(lpsyn.get(temp[i]) == null)
+                      {
+                            t = new ArrayList<Integer>();
+                            int a=Integer.parseInt(line.split(",")[0]);
+                            t.add(a);;
+                            lpsyn.put(temp[i].trim(),t);
+                            //to keep a note of all the keys for the tostring method
+                            words.add(temp[i]);
+                            count++;
+                      }
+                      else
+                      {
+                         int b =Integer.parseInt(line.split(",")[0]);
+                         lpsyn.get(temp[i].trim()).add(b);
+                         words.add(temp[i]);
+                      }
                 }
-
-                else if(line.split(" ").length==1)
-                {
-                    // System.out.println("Hello - 3 : adding" + line);
-                    lp.put(line, s.split(""));
-                    idhy.add(line);
-                }
-                // links.add(line.split(",",2)[1].split(","));
             }
-        }
-
-        catch (FileNotFoundException e) {
-            e.getMessage();
-        } catch (IOException e) {
-            e.getMessage();
-        }
+        return count;
     }
 
-    public void synSets()  {
-        String[] intArray = new String[3];
-
-        try {
-            String fileName = "C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet\\synsets.txt";
-            System.out.println(fileName);
-            File file = new File(fileName);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-            while ((line = br.readLine()) != null) {
-                intArray = line.split(",");
-                lp.put(line.split(",")[0], line.split(",")[1].split(" "));
-
-                id.add(intArray[0]);
-                // wordm.add(intArray[2]);
-            }
-        }
-
-        catch (FileNotFoundException e) {
-            e.getMessage();
-        } catch (IOException e) {
-            e.getMessage();
-        }
-    }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        System.out.println("Size is : " + idhy.size());
-        for(int i =0 ; i<lp.size();i++)
-        {
-            // lp.put(idhy.get(i),links.get(i));
-            String key = idhy.get(i);
-            sb.append(key + " :: [");
-            int j = 0;
-            if (lp.get(key) !=null ) {
-                String[] toks = lp.get(key);
-                for (; j < toks.length-1; j++) {
-                    sb.append(toks[j] + ", ");
-                }
-                sb.append(toks[j]);
-            } else {
-                sb.append(key);
-            }
-            sb.append("]\n");
-
-            // System.out.println(lp.toString());
-        }
-        return sb.toString();
-    }
-
-    public String toString1() {
-        StringBuffer sb = new StringBuffer();
-        System.out.println("Size is : " + id.size());
-        for(int i =0 ; i<lp.size();i++)
-        {
-            // lp.put(idhy.get(i),links.get(i));
-            String key = id.get(i);
-            sb.append(key + " :: [");
-            int j = 0;
-            if (lp.get(key) !=null ) {
-                String[] toks = lp.get(key);
-                for (; j < toks.length-1; j++) {
-                    sb.append(toks[j] + ", ");
-                }
-                sb.append(toks[j]);
-            } else {
-                sb.append(key);
-            }
-            sb.append("]\n");
-
-            // System.out.println(lp.toString());
-        }
-        return sb.toString();
-    }
+     private Digraph hypernymssplit(String filename,int len)
+     {
+        In br = new In(filename);
+   Digraph graph =  new Digraph(len);
+   while (br.hasNextLine()) {
+      String [] Str = br.readLine().split(",");
+      for(int i = 1; i < Str.length; i++) {
+         int a = Integer.parseInt(Str[0]);
+         int b = Integer.parseInt(Str[i]);
+         graph.addEdge(a,b);
+         }
+      }
+   return graph;
 
 
-    // // do unit testing of this class
-    public static void main(String[] args) {
-        wordNet wn = new wordNet();
-        // wn.synSets();
-        wn.hyperNyms();
-        // System.out.println(id);
-        // System.out.println(word);
-        // System.out.println(wordm);
-        System.out.println(idhy);
-        System.out.println(links);
-
-        // for (int i = 0; i < links.size(); i++) {
-        //     System.out.println(Arrays.toString(links.get(i)));
-
-        // }
-        System.out.println(wn.toString());
-        // System.out.println(wn.toString1());
-   }
 }
+      public Iterable<String> nouns()
+      {
+        return words;
+      }
+      public boolean isNoun(String word)
+      {
+           return lpsyn.contains(word);
+      }
+      public int distance(String nounA,String nounB)
+      {
+        if(isNoun(nounA) && isNoun(nounB) ){
 
+            int  len = sapobj.length(lpsyn.get(nounA) , lpsyn.get(nounB));
+              return len ;
+           }
+
+          return -1;
+        }
+
+
+      public String sap(String nounA,String nounB)
+      {
+        if(isNoun(nounA) && isNoun(nounB)==true)
+        {
+            // sapobj=new SAP(graph);
+            System.out.println(lpsyn.get("Aalst"));
+            // System.out.println(lpidnou.get("Abadan"));
+            // System.out.println(sapobj.ancestor(47,53));
+
+           int result = sapobj.ancestor(lpsyn.get(nounA),lpsyn.get(nounB));
+            // System.out.println(result);
+            if(result!=-1)
+            {
+                return val.get(result);
+            }
+            else{
+                return "there is no common ancestor";
+            }
+        }
+        return null;
+      }
+    //   public static void main(String[] args)throws Exception
+    //   {
+    //        WordNet objNet4 = new WordNet("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet1\\synsets.txt","C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet1\\hypernyms.txt");
+//  for(int i=0;i<lp.size();i++)
+//  {
+//      System.out.println(id.get(i)+"--->"+lp.get(id.get(i)));
+//  }
+//  for(int i=0;i<lpidnou.size();i++)
+//  {
+//     System.out.println(noun.get(i)+"--->"+lpidnou.get(noun.get(i)));
+//  }
+
+
+// System.out.println(lpidnou.get("Acipenseridae"));
+// System.out.println(objNet4.isNoun("1"));
+// System.out.println(objNet4.distance("Aalst","Acipenseridae"));
+// System.out.println(objNet4.sap("Aalst","Acipenseridae"));
+
+// for(int v =0;v<arr.size();v++)
+//     {
+//         System.out.print(v+"---->");
+//         for(int w:graph.adj(v))
+//         {
+//              System.out.print(w+" ");
+//         }
+//         System.out.println();
+//         if(v==55)
+//         break;
+
+
+
+// }
+}
