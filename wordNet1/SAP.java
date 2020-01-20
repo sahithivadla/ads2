@@ -35,6 +35,7 @@ public class SAP {
         if (v < 0 || v > graph.V() || w < 0 || w > graph.V()) {
           throw new IllegalArgumentException();
       }
+
       BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
       BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
       short_len=Integer.MAX_VALUE;
@@ -65,6 +66,7 @@ public class SAP {
         if (v < 0 || v > graph.V() || w < 0 || w > graph.V()) {
           throw new IllegalArgumentException();
       }
+
         length(v,w);
         return short_ancestor;
       }
@@ -75,10 +77,12 @@ public class SAP {
         * @param w is the second vertex
         * @return distance if exists, else returns -1
         */
+
       public int length(Iterable<Integer> v, Iterable<Integer> w) {
        if(v==null||w==null)            throw new IllegalArgumentException();
-
-      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
+       valid(v);
+        valid(w);
+              BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
       BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
       short_len = Integer.MAX_VALUE;
         short_ancestor = -1 ;
