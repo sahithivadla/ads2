@@ -16,25 +16,22 @@ import java.io.FileNotFoundException;
          wordNet = wordnet;
       }
       public String outcast(String[] nouns) { // given an array of WordNet nouns, return an outcast
-         int lengths = nouns.length ;
-         int  [] temp = new int[lengths];
-         for(int i=0; i < lengths-1 ; i++){
-            for(int j = i+1; j< lengths ; j++){
-               int Temp = wordNet.distance(nouns[i],nouns[j]);
-               temp[i] += Temp;
-               temp[j] += Temp;
+         String outcastword=null;
+         int dist=0,maxlen=0;
+         for(String a:nouns)
+         {
+            dist=0;
+            for(String b:nouns)
+            {
+                 dist=wordNet.distance(a,b);
+            }
+            if(dist>maxlen)
+            {
+               maxlen=dist;
+               outcastword=a;
             }
          }
-         int maxDistance = 0;
-         int index = 0;
-         for(int i = 0; i< lengths; i++){
-            if(temp[i] > maxDistance){
-                maxDistance = temp[i] ;
-                index = i;
-            }
-         }
-         return nouns[index];
-
+         return outcastword;
       }
        // public static void main(String[] args) {
 

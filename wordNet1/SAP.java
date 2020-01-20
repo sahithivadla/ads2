@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
@@ -103,8 +105,22 @@ public class SAP {
        */
       public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
         if(v==null||w==null)            throw new IllegalArgumentException();
+        valid(v);
+        valid(w);
       length(v,w);
       return short_ancestor;
+    }
+    private void valid(Iterable<Integer> v)
+    {
+      final Iterator<Integer> iobj = v.iterator();
+
+      while(iobj.hasNext())
+        {
+          if(iobj.next()==null)
+          {
+            throw new IllegalArgumentException();
+          }
+        }
     }
 
 
