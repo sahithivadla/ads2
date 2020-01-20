@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import edu.princeton.cs.algs4.In;
 
 
+
 public class WordNet
 {
      private final  Digraph graph;
@@ -29,40 +30,34 @@ public class WordNet
      private int synsetssplit(String fname)
      {
 
-        In input = new In(fname);
-            String line;
-            int count=0;
+      In input = new In(fname);
+      String str;
+      int count = 0;
+     while (input.hasNextLine()) {
+        str = input.readLine();
+        String[] x = str.split(",");
+        int k = Integer.parseInt(x[0]);
+        val.add(k,x[1]);
+        //0,abc a_B_C,meaning
+        //x - [0, abc a_b_c, meaning]
+        String [] st = x[1].split(" ");
+        count++;
+        for(int j = 0; j < st.length; j++) {
+                  String n = st[j].trim();
+                  if(!lpsyn.contains(n)) {
+                      ArrayList<Integer> id = new ArrayList<Integer>();
+                      id.add(k);
+                      lpsyn.put(n, id);
+                  } else {
+                    lpsyn.get(n).add(Integer.parseInt(x[0]));
+                  }
+              }
 
-            ArrayList<String> te = new ArrayList<String>();
-            while (input.hasNextLine()) {
-                // id as key  and then array list of nouns as value
-                line=input.readLine();
-                int k = Integer.parseInt(line.split(",")[0]);
-                val.add(k,line.split(",")[1]);
-                String[] temp = line.split(",")[1].split(" ");
-                ArrayList<Integer> t = new ArrayList<Integer>();
-                for(int i =0;i<temp.length;i++)
-                {
-                      if(lpsyn.get(temp[i]) == null)
-                      {
-                            t = new ArrayList<Integer>();
-                            int a=Integer.parseInt(line.split(",")[0]);
-                            t.add(a);;
-                            lpsyn.put(temp[i].trim(),t);
-                            //to keep a note of all the keys for the tostring method
-                            words.add(temp[i]);
-                            count++;
-                      }
-                      else
-                      {
-                         int b =Integer.parseInt(line.split(",")[0]);
-                         lpsyn.get(temp[i].trim()).add(b);
-                         words.add(temp[i]);
-                      }
-                }
-            }
-        return count;
-    }
+           }
+     return count;
+     }
+
+
 
      private Digraph hypernymssplit(String filename,int len)
      {
@@ -70,15 +65,16 @@ public class WordNet
    Digraph graph =  new Digraph(len);
    while (br.hasNextLine()) {
       String [] Str = br.readLine().split(",");
+      if(Str.length>1)
+      {
       for(int i = 1; i < Str.length; i++) {
          int a = Integer.parseInt(Str[0]);
          int b = Integer.parseInt(Str[i]);
          graph.addEdge(a,b);
          }
       }
+    }
    return graph;
-
-
 }
       public Iterable<String> nouns()
       {
@@ -98,17 +94,14 @@ public class WordNet
 
           return -1;
         }
-
-
       public String sap(String nounA,String nounB)
       {
         if(isNoun(nounA) && isNoun(nounB)==true)
         {
             // sapobj=new SAP(graph);
-            System.out.println(lpsyn.get("Aalst"));
+            // System.out.println(lpsyn.get("Aalst"));
             // System.out.println(lpidnou.get("Abadan"));
             // System.out.println(sapobj.ancestor(47,53));
-
            int result = sapobj.ancestor(lpsyn.get(nounA),lpsyn.get(nounB));
             // System.out.println(result);
             if(result!=-1)

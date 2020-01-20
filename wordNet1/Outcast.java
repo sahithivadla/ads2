@@ -10,32 +10,32 @@ import java.io.FileNotFoundException;
 
 
     public class Outcast {
-       private final WordNet wordNet;
+      private final WordNet wordNet;
 
-       public Outcast(final WordNet wordnet) { // constructor takes a WordNet object
-          wordNet = wordnet;
-       }
-       public String outcast(String[] nouns) { // given an array of WordNet nouns, return an outcast
-          int lengths = nouns.length ;
-          int  [] temp = new int[lengths];
-          for(int i=0; i < lengths-1 ; i++){
-             for(int j = i+1; j< lengths ; j++){
-                int Temp = wordNet.distance(nouns[i],nouns[j]);
-                temp[i] += Temp;
-                temp[j] += Temp;
-             }
-          }
-          int maxDistance = 0;
-          int index = 0;
-          for(int i = 0; i< lengths; i++){
-             if(temp[i] > maxDistance){
-                 maxDistance = temp[i] ;
-                 index = i;
-             }
-          }
-          return nouns[index];
+      public Outcast(final WordNet wordnet) { // constructor takes a WordNet object
+         wordNet = wordnet;
+      }
+      public String outcast(String[] nouns) { // given an array of WordNet nouns, return an outcast
+         int lengths = nouns.length ;
+         int  [] temp = new int[lengths];
+         for(int i=0; i < lengths-1 ; i++){
+            for(int j = i+1; j< lengths ; j++){
+               int Temp = wordNet.distance(nouns[i],nouns[j]);
+               temp[i] += Temp;
+               temp[j] += Temp;
+            }
+         }
+         int maxDistance = 0;
+         int index = 0;
+         for(int i = 0; i< lengths; i++){
+            if(temp[i] > maxDistance){
+                maxDistance = temp[i] ;
+                index = i;
+            }
+         }
+         return nouns[index];
 
-       }
+      }
        // public static void main(String[] args) {
 
        // } // see test client below

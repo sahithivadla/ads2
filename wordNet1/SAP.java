@@ -9,16 +9,18 @@ import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 
 
+
 public class SAP {
-    private Digraph G;
-    private final int infinity= Integer.MAX_VALUE;
+    private Digraph graph;
+    private  int short_len;
+    private   int short_ancestor;
 
     /**
      * constructor takes graph as input
      * @param G is the graph
      */
       public SAP(Digraph G) {
-      this.G = new Digraph(G);
+      graph=G;
       }
 
       /**
@@ -28,23 +30,28 @@ public class SAP {
        * @return distance if exists, else returns -1
        */
       public int length(int v, int w) {
-      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(G, v);
-      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(G, w);
-      int MinDist = infinity;
-      for (int i = 0; i < G.V(); i++) {
+        if (v < 0 || v > graph.V() || w < 0 || w > graph.V()) {
+          throw new IllegalArgumentException();
+      }
+      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
+      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
+      short_len=Integer.MAX_VALUE;
+      int templen=0;
+      short_ancestor=-1;
+      for (int i = 0; i < graph.V(); i++) {
       if (bv.hasPathTo(i) && bw.hasPathTo(i)) {
-      if ((bv.distTo(i) + bw.distTo(i)) < infinity) {
-      MinDist = bv.distTo(i) + bw.distTo(i);
+      templen = bv.distTo(i) + bw.distTo(i);
+      if (templen<short_len) {
+      short_len=templen;
+      short_ancestor=i;
       }
-      }
-      }
-      if (MinDist == infinity) {
-      return -1;
-      }
-      else {
-      return MinDist;
-      }
-      }
+    }
+ }
+ if(short_len == Integer.MAX_VALUE) {
+  this.short_len = -1;
+    }
+    return short_len ;
+}
 
       /**
        * This method is used to find the nearest ancestor
@@ -53,19 +60,11 @@ public class SAP {
        * @return ancestor if exists, else returns -1
        */
       public int ancestor(int v, int w) {
-      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(G, v);
-      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(G, w);
-      int MinDist = infinity;
-      int anc = -1;
-      for (int i = 0; i < G.V(); i++) {
-      if (bv.hasPathTo(i) && bw.hasPathTo(i)) {
-      if (bv.distTo(i) + bw.distTo(i) < infinity) {
-      MinDist = bv.distTo(i) + bw.distTo(i);
-      anc = i;
+        if (v < 0 || v > graph.V() || w < 0 || w > graph.V()) {
+          throw new IllegalArgumentException();
       }
-      }
-      }
-      return anc;
+        length(v,w);
+        return short_ancestor;
       }
 
        /**
@@ -75,21 +74,26 @@ public class SAP {
         * @return distance if exists, else returns -1
         */
       public int length(Iterable<Integer> v, Iterable<Integer> w) {
-      int MinDist = infinity;
-      for (int i : v) {
-      for (int j : w) {
-      int dist = length(i,j);
-      if (dist == -1 && dist < MinDist) {
-      MinDist = dist;
-      }
-      }
-      }
-      if (MinDist == infinity) {
-      return -1;
-      } else {
-      return MinDist;
-      }
-      }
+       if(v==null||w==null)            throw new IllegalArgumentException();
+
+      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
+      BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
+      short_len = Integer.MAX_VALUE;
+        short_ancestor = -1 ;
+        int templen = Integer.MAX_VALUE;
+        for(int i=0; i < graph.V(); i++){
+          if(v==null||w==null)            throw new IllegalArgumentException();
+             if (bv.hasPathTo(i) && bw.hasPathTo(i) && bv.distTo(i) + bw.distTo(i) < templen) {
+			       short_ancestor = i;
+			       templen = bv.distTo(i) + bw.distTo(i);
+		                }
+	            }
+        if (templen == Integer.MAX_VALUE) {
+          templen = -1;
+	       }
+	    short_len = templen;
+        return short_len;
+    }
 
       /**
        * This method is used to find nearest ancestor
@@ -98,19 +102,12 @@ public class SAP {
        * @return ancestor if exists, else return -1
        */
       public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
-      int MinDist = infinity;
-      int anc = -1;
-      for (int i : v) {
-      for (int j : w) {
-      int dist = length(i,j);
-      if(dist == -1 && dist < MinDist) {
-      MinDist = dist;
-      anc = ancestor(i,j);
-      }
-      }
-      }
-      return anc;
-      }
+        if(v==null||w==null)            throw new IllegalArgumentException();
+      length(v,w);
+      return short_ancestor;
+    }
+
+
 
       /**
        *  do unit testing of this class
@@ -119,7 +116,7 @@ public class SAP {
        */
 
     //   public static void main (String[] args) throws FileNotFoundException,IOException{
-    //   ArrayList<String> arr = new ArrayList<>();
+    // //   ArrayList<String> arr = new ArrayList<>();
     //     File file = new File("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\wordNet1\\hypernyms15Tree.txt");
     // BufferedReader br = new BufferedReader(new FileReader(file));
     //  String st;
@@ -136,8 +133,8 @@ public class SAP {
     // }
     // }
 
-    // // for (int v = 0; v < arr.size(); v++) {
-    // // System.out.print(v+"---------->");
+    // for (int v = 0; v < arr.size(); v++) {
+    // System.out.print(v+"---------->");
     // // for (int w : graph.adj(v)) {
     // // System.out.print(w+" ");
     // // }
@@ -151,6 +148,8 @@ public class SAP {
 
     //   }
 
-    }
+    // }
+  }
+
 
 
