@@ -35,7 +35,6 @@ public class SAP {
         if (v < 0 || v > graph.V() || w < 0 || w > graph.V()) {
           throw new IllegalArgumentException();
       }
-
       BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
       BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
       short_len=Integer.MAX_VALUE;
@@ -82,7 +81,7 @@ public class SAP {
        if(v==null||w==null)            throw new IllegalArgumentException();
        valid(v);
         valid(w);
-              BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
+      BreadthFirstDirectedPaths bv = new BreadthFirstDirectedPaths(graph, v);
       BreadthFirstDirectedPaths bw = new BreadthFirstDirectedPaths(graph, w);
       short_len = Integer.MAX_VALUE;
         short_ancestor = -1 ;

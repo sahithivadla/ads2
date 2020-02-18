@@ -1,22 +1,17 @@
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
-
-import javax.imageio.ImageIO;
 import edu.princeton.cs.algs4.Picture;
 import java.awt.Color;
 public class SeamCarver {
-    Picture pict;
-    static int picheight=0;
-    static int picwidth=0;
+    private Picture pict;
+//    private   int picheight=0;
+//     private  int picwidth=0;
     private static  double[][] energyarr;
     private  static double[][] energyarrt;
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
         this.pict = picture;
-        this.picheight = height();
-        this.picwidth = width();
-    }
+        }
 
     // returns current picture
     public Picture picture() {
@@ -35,37 +30,41 @@ public class SeamCarver {
 
     // energy of pixel at column x and row y
 
-    private double[][] energyar() {
-        energyarr = new double[picwidth][picheight];
+    private void energyar() {
+        energyarr = new double[width()][height()];
         for (int i = 0; i < energyarr[0].length; i++) {
             energyarr[0][i] = 1000;
-            energyarr[picwidth - 1][i] = 1000;
+            energyarr[width() - 1][i] = 1000;
         }
         for (int i = 0; i < energyarr.length; i++) {
             energyarr[i][0] = 1000;
-            energyarr[i][picheight - 1] = 1000;
+            energyarr[i][height() - 1] = 1000;
         }
-        for(int i=1; i<picwidth-1;i++)
+        for(int i=1; i<width()-1;i++)
         {
-          for(int j=1;j<picheight-1;j++)
+          for(int j=1;j<height()-1;j++)
           {
-            energyarr[i][j]= Math.sqrt(energy(i,j));
+            energyarr[i][j]= energy(i,j);
         // System.out.println(energyarr[i][j]);
           }
         }
+        energyarrt = new double[height()][width()];
+        energyarrt=mattranspose(energyarr);
 
-        return(mattranspose(energyarr));
     }
 
     public double energy(int x, int y) {
-        if (x < 0 || x > picwidth - 1 || y < 0 || y > picheight - 1)
+        if (x < 0 || x > width() - 1 || y < 0 || y > height() - 1)
             throw new IndexOutOfBoundsException();
-        return xValue(x, y) + yValue(x, y);
+        if(x==0 || x==width()-1 ||y==0||y==height()-1)
+         return 1000;
+        return Math.sqrt(xValue(x, y) + yValue(x, y));
     }
     private int xValue(int x, int y) {
         // in order to get the rgb values of a particular pixel
         // take the pixels above and below that particular pixel and get their
         // respective colours
+
         Color c1 = pict.get(x - 1, y);
         Color c2 = pict.get(x + 1, y);
         int rxval = Math.abs(c1.getRed() - c2.getRed());
@@ -88,7 +87,7 @@ public class SeamCarver {
 
     private double[][] mattranspose(double[][]a)
     {
-        double[][] transpose = new double[pict.height()][pict.width()];
+        double[][] transpose = new double[height()][width()];
         for(int i=0;i<pict.height();i++){
             for(int j=0;j<pict.width();j++){
             transpose[i][j]=a[j][i];
@@ -100,17 +99,33 @@ public class SeamCarver {
     // sequence of indices for horizontal seam
     public int[] findVerticalSeam()
     {
-    double[][] finalarr=cumulativevert(energyarrt);
+    energyar();
+    double[][] finalarr=new double[height()][width()];
+    finalarr=cumulativevert(energyarrt);
     // first go from top to bottom
-        for(int i=0;i<picheight;i++)
+        // for(int i=0;i<height();i++)
+        // {
+        //     for(int j=0;j<width();j++)
+        //     {
+        //         System.out.print(finalarr[i][j]+" ");
+        //     }
+        //     System.out.println();
+        // }
+        int[] fseam = new int[seamcalc(finalarr).length];
+        fseam=seamcalc(finalarr);
+        int[] finalseam=new int[fseam.length];
+        int k=0;
+        for(int i=finalseam.length-1;i>=0;i--)
         {
-            for(int j=0;j<picwidth;j++)
-            {
-                System.out.print(finalarr[i][j]+" ");
-            }
-            System.out.println();
+            finalseam[k]=fseam[i];
+            k++;
         }
-        return (seamcalc(finalarr));
+
+        // for(int i=0;i<finalseam.length;i++)
+        // {
+        //     System.out.print(finalseam[i]);
+        // }
+        return (finalseam);
     }
 
     private double[][] cumulativevert(double[][]b)
@@ -131,7 +146,7 @@ public class SeamCarver {
                       b[i][j]=energyarrt[i][j]+Math.min(b[i-1][0],b[i-1][1]);
                   }
                    //middle elements
-                   else if(j > 0 && j < picwidth - 1)
+                   else if(j > 0 && j < width() - 1)
                    {
                         double min1=Math.min(b[i-1][j-1],b[i-1][j]);
                         double min2=b[i-1][j+1];
@@ -144,6 +159,14 @@ public class SeamCarver {
                    }
             }
         }
+        // for(int i=0;i<rows;i++)
+        // {
+        //     for(int j=0;j<cols;j++)
+        //     {
+        //         System.out.print(b[i][j]+" ");
+        //     }
+        // }
+        // System.out.println();
         return b;
     }
 
@@ -178,6 +201,14 @@ public class SeamCarver {
                    }
             }
         }
+        // for(int i=0;i<rows;i++)
+        // {
+        //     for(int j=0;j<cols;j++)
+        //     {
+        //         System.out.print(b[i][j]+" ");
+        //     }
+        // }
+        // System.out.println();
         return b;
     }
     private int[] seamcalc(double[][]a)
@@ -294,8 +325,19 @@ public class SeamCarver {
     // sequence of indices for horizontal  seam
     public int[] findHorizontalSeam()
     {
-      double[][] bb=cumulativehor(energyarr);
-      return(seamcalc(bb));
+      energyar();
+      double[][] bb=new double[width()][height()];
+      bb=cumulativehor(energyarr);
+      int[] fseam=new int[seamcalc(bb).length];
+      fseam=seamcalc(bb);
+        int[] finalseam=new int[fseam.length];
+        int k=0;
+        for(int i=finalseam.length-1;i>=0;i--)
+        {
+            finalseam[k]=fseam[i];
+            k++;
+        }
+        return (finalseam);
     }
 
 
@@ -328,8 +370,8 @@ public class SeamCarver {
                 }
             }
         }
-        System.out.println(pict);
-        System.out.println(resizedPicture);
+        // System.out.println(pict);
+        // System.out.println(resizedPicture);
         pict = resizedPicture;
         resizedPicture = null;
         double[][] resizedarr=new double[pict.height()][pict.width()];
@@ -430,9 +472,11 @@ public class SeamCarver {
     // unit testing (optional)
     public static void main(String[] args)
     {
-        Picture pi = new Picture("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\ads2proj2\\5x6.png");
+        Picture pi = new Picture("C:\\Users\\Sahithi\\Desktop\\ads2\\ads2\\ads2proj2\\10x12.png");
         SeamCarver sc = new SeamCarver(pi);
-        energyarrt=sc.energyar();
-        sc.removeVerticalSeam(sc.findVerticalSeam());
+        // energyarrt=new double[height()][width()];
+        sc.energyar();
+        int[] c=sc.findHorizontalSeam();
+        System.out.println(Arrays.toString(c));
     }
 }

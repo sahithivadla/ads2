@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\Sahithi\\Desktop\\ads2\\algs4.jar"
+    ],
+    "java.dependency.syncWithFolderExplorer": false
+}

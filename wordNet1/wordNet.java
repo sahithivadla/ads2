@@ -57,8 +57,6 @@ public class WordNet
      return count;
      }
 
-
-
      private Digraph hypernymssplit(String filename,int len)
      {
         In br = new In(filename);
@@ -93,7 +91,7 @@ public class WordNet
            }
 
           return -1;
-        }
+      }
       public String sap(String nounA,String nounB)
       {
         if(isNoun(nounA) && isNoun(nounB)==true)
@@ -142,8 +140,6 @@ public class WordNet
 //         System.out.println();
 //         if(v==55)
 //         break;
-
-
 
 // }
 }
